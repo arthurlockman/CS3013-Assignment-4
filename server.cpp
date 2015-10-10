@@ -2,6 +2,7 @@
 
 Server::Server(int threads)
 {
+    gettimeofday(&start, NULL);
     numThreads = threads;
     sem_init(&sem_updateCounts, 0, 1);
     sem_init(&sem_filelistaccess, 0, 1);
@@ -47,8 +48,6 @@ string Server::getNextFile()
  */
 void Server::run()
 {
-    struct timeval start;
-    gettimeofday(&start, NULL);
     if (numThreads == 1)
     {
         string next;
@@ -124,10 +123,6 @@ void Server::run()
             crawlers.at(i).JoinThread();
         }
     }
-    struct timeval end;
-    gettimeofday(&end, NULL);
-    struct rusage stats;
-    getrusage(RUSAGE_SELF, &stats);
     cout << "Bad files: " << count_badFiles << endl;
     cout << "Directories: " << count_directories << endl;
     cout << "Regular Files: " << count_regularFiles << endl;
@@ -135,8 +130,12 @@ void Server::run()
     cout << "Regular File Bytes: " << bytes_regularFiles << endl;
     cout << "Text Files: " << count_textFiles << endl;
     cout << "Text File Bytes: " << bytes_textFiles << endl;
+    struct rusage stats;
+    getrusage(RUSAGE_SELF, &stats);
     cout << "User Time: " << stats.ru_utime.tv_sec * 1000 + stats.ru_utime.tv_usec / 1000 << endl;
     cout << "System Time: " << stats.ru_stime.tv_sec * 1000 + stats.ru_stime.tv_usec / 1000 << endl;
-    cout << "Clock Time: " << end.tv_sec - start.tv_sec << endl;
+    struct timeval end;
+    gettimeofday(&end, NULL);
+    cout << "Clock Time: " << (end.tv_sec * 1000 + end.tv_usec / 1000) - (start.tv_sec * 1000 + start.tv_usec / 1000) << endl;
 }
 

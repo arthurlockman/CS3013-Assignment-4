@@ -30,6 +30,7 @@ class Server
         sem_t sem_updateCounts;
         sem_t sem_filelistaccess;
         stack<string> fileList;
+        struct timeval start;
     public:
         Server(int threads);
         ~Server();

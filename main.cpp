@@ -10,7 +10,6 @@ int main(int argc, char ** argv)
     if (argc == 3 && strncmp(argv[1], "thread", 6) == 0)
     {
         threads = atoi(argv[2]);
-        cout << "Using " << threads << " threads." << endl;
     }
     Server server(threads);
     string lineInput;
