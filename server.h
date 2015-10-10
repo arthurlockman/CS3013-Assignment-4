@@ -14,8 +14,14 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <fcntl.h>
+#include "crawler.h"
+#include <vector>
+#include <sys/time.h>
+#include <sys/resource.h>
 
 using namespace std;
+
+class Crawler;
 
 class Server
 {

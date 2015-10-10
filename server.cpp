@@ -21,7 +21,7 @@ void Server::addFile(string filename)
 void Server::lockAndAdd(unsigned long * val, unsigned long addition)
 {
     sem_wait(&sem_updateCounts);
-    &val += addition;
+    *val += addition;
     sem_post(&sem_updateCounts);
 }
 
@@ -32,7 +32,10 @@ string Server::getNextFile()
 {
     sem_wait(&sem_filelistaccess);
     if (fileList.empty())
+    {
+        sem_post(&sem_filelistaccess);
         throw runtime_error("No more files.");
+    }
     string file = fileList.top();
     fileList.pop();
     sem_post(&sem_filelistaccess);
@@ -44,6 +47,8 @@ string Server::getNextFile()
  */
 void Server::run()
 {
+    struct timeval start;
+    gettimeofday(&start, NULL);
     if (numThreads == 1)
     {
         string next;
@@ -65,7 +70,6 @@ void Server::run()
             }
             else if (S_ISREG(fileinfo.st_mode)) //Regular file
             {
-                //TODO: check if is text file
                 count_regularFiles++;
                 bytes_regularFiles += fileinfo.st_size;
                 int infile;
@@ -104,8 +108,26 @@ void Server::run()
         }
     } else
     {
+        numThreads = (numThreads > 15) ? 15 : numThreads;
+        vector<Crawler> crawlers;
+        for (int i = 0; i < numThreads; i++)
+        {
+            Crawler c(this);
+            crawlers.push_back(c);
+        }
+        for (int i = 0; (unsigned long)i < crawlers.size(); i++)
+        {
+            crawlers.at(i).StartThread();
+        }
+        for (int i = 0; (unsigned long)i < crawlers.size(); i++)
+        {
+            crawlers.at(i).JoinThread();
+        }
     }
-
+    struct timeval end;
+    gettimeofday(&end, NULL);
+    struct rusage stats;
+    getrusage(RUSAGE_SELF, &stats);
     cout << "Bad files: " << count_badFiles << endl;
     cout << "Directories: " << count_directories << endl;
     cout << "Regular Files: " << count_regularFiles << endl;
@@ -113,5 +135,8 @@ void Server::run()
     cout << "Regular File Bytes: " << bytes_regularFiles << endl;
     cout << "Text Files: " << count_textFiles << endl;
     cout << "Text File Bytes: " << bytes_textFiles << endl;
+    cout << "User Time: " << stats.ru_utime.tv_sec * 1000 + stats.ru_utime.tv_usec / 1000 << endl;
+    cout << "System Time: " << stats.ru_stime.tv_sec * 1000 + stats.ru_stime.tv_usec / 1000 << endl;
+    cout << "Clock Time: " << end.tv_sec - start.tv_sec << endl;
 }
 

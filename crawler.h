@@ -18,6 +18,8 @@
 
 using namespace std;
 
+class Server;
+
 class Crawler
 {
     private:
@@ -35,3 +37,4 @@ class Crawler
         bool JoinThread();
 };
 
+#endif
