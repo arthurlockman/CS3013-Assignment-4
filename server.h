@@ -13,6 +13,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <fcntl.h>
 
 using namespace std;
 
@@ -27,8 +28,7 @@ class Server
         Server(int threads);
         ~Server();
         void addFile(string filename);
-        void lockCountUpdate();
-        void releaseCountUpdate();
+        void lockAndAdd(unsigned long * val, unsigned long addition);
         string getNextFile();
         void run();
         //Variables to hold counts.

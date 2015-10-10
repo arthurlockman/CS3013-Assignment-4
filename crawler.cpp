@@ -1,58 +1,31 @@
-#include "server.h"
+#include "crawler.h"
 
-Server::Server(int threads)
+Crawler::Crawler(Server * s)
 {
-    numThreads = threads;
-    sem_init(&sem_updateCounts, 0, 1);
-    sem_init(&sem_filelistaccess, 0, 1);
+    server = s;
 }
 
-Server::~Server()
+bool Crawler::StartThread()
 {
-    sem_destroy(&sem_updateCounts);
-    sem_destroy(&sem_filelistaccess);
+    return (pthread_create(&_thread, NULL, &this->StartThreadFunction, this) == 0);
 }
 
-void Server::addFile(string filename)
+bool Crawler::JoinThread()
 {
-    fileList.push(filename);
+    return (pthread_join(_thread, NULL) == 0);
 }
 
-void Server::lockAndAdd(unsigned long * val, unsigned long addition)
+void * Crawler::crawl(void * crawler)
 {
-    sem_wait(&sem_updateCounts);
-    &val += addition;
-    sem_post(&sem_updateCounts);
-}
+    Server * s = ((Crawler *)crawler)->server;
 
-/**
- * Get the next file for processing from the stack.
- */
-string Server::getNextFile()
-{
-    sem_wait(&sem_filelistaccess);
-    if (fileList.empty())
-        throw runtime_error("No more files.");
-    string file = fileList.top();
-    fileList.pop();
-    sem_post(&sem_filelistaccess);
-    return file;
-}
-
-/**
- * Run the server with the specified number of threads.
- */
-void Server::run()
-{
-    if (numThreads == 1)
-    {
         string next;
         struct stat fileinfo;
         for (;;)
         {
             try
             {
-                next = this->getNextFile();
+                next = s->getNextFile();
             }
             catch (runtime_error & e)
             {
@@ -101,17 +74,5 @@ void Server::run()
             {
                 count_specialFiles++;
             }
-        }
-    } else
-    {
-    }
-
-    cout << "Bad files: " << count_badFiles << endl;
-    cout << "Directories: " << count_directories << endl;
-    cout << "Regular Files: " << count_regularFiles << endl;
-    cout << "Special Files: " << count_specialFiles << endl;
-    cout << "Regular File Bytes: " << bytes_regularFiles << endl;
-    cout << "Text Files: " << count_textFiles << endl;
-    cout << "Text File Bytes: " << bytes_textFiles << endl;
+    return NULL;
 }
-
