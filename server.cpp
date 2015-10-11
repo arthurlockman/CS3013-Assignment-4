@@ -1,6 +1,13 @@
 #include "server.h"
 
-Server::Server(int threads)
+Server::Server(int threads):
+    count_badFiles(0),
+    count_directories(0),
+    count_specialFiles(0),
+    count_regularFiles(0),
+    bytes_regularFiles(0),
+    count_textFiles(0),
+    bytes_textFiles(0)
 {
     gettimeofday(&start, NULL);
     numThreads = threads;

@@ -39,13 +39,13 @@ class Server
         string getNextFile();
         void run();
         //Variables to hold counts.
-        unsigned long count_badFiles = 0;
-        unsigned long count_directories = 0;
-        unsigned long count_specialFiles = 0;
-        unsigned long count_regularFiles = 0;
-        unsigned long bytes_regularFiles = 0;
-        unsigned long count_textFiles = 0;
-        unsigned long bytes_textFiles = 0;
+        unsigned long count_badFiles;
+        unsigned long count_directories;
+        unsigned long count_specialFiles;
+        unsigned long count_regularFiles;
+        unsigned long bytes_regularFiles;
+        unsigned long count_textFiles;
+        unsigned long bytes_textFiles;
 };
 
 #endif
