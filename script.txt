@@ -1,0 +1,49 @@
+Script started on Sun 11 Oct 2015 07:19:22 PM EDT
+ajlockman@CCC1:~/CS3013-Assignment-4$ ls -1d * | ./proj4
+Bad files: 0
+Directories: 0
+Regular Files: 17
+Special Files: 0
+Regular File Bytes: 565664
+Text Files: 14
+Text File Bytes: 22046
+User Time: 7
+System Time: 29
+Clock Time: 40
+ajlockman@CCC1:~/CS3013-Assignment-4$ ls -1d * | ./proj4 thread 5
+Bad files: 0
+Directories: 0
+Regular Files: 17
+Special Files: 0
+Regular File Bytes: 565664
+Text Files: 13
+Text File Bytes: 22046
+User Time: 9
+System Time: 33
+Clock Time: 25
+ajlockman@CCC1:~/CS3013-Assignment-4$ ls -1d * | ./proj4 thread 10
+Bad files: 0
+Directories: 0
+Regular Files: 17
+Special Files: 0
+Regular File Bytes: 565664
+Text Files: 13
+Text File Bytes: 22046
+User Time: 14
+System Time: 28
+Clock Time: 24
+ajlockman@CCC1:~/CS3013-Assignment-4$ ls -1d /etc/* | ./proj4 thread 10
+Bad files: 1
+Directories: 114
+Regular Files: 299
+Special Files: 0
+Regular File Bytes: 1649026
+Text Files: 284
+Text File Bytes: 564239
+User Time: 411
+System Time: 1412
+Clock Time: 1234
+ajlockman@CCC1:~/CS3013-Assignment-4$ exit
+exit
+
+Script done on Sun 11 Oct 2015 07:20:01 PM EDT
